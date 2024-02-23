@@ -1,65 +1,36 @@
 // const express =require("express")
-import express from "express";
+import express, { request, response } from "express";
 import cors from "cors";
-let array = [
-  {
-    name: "Batuusch",
-    age: 25,
-    lastname: "L",
-    id: 1,
-  },
-  {
-    name: "Bat",
-    age: 20,
-    lastname: "C",
-    id: 2,
-  },
-  {
-    name: "Temka",
-    age: 15,
-    lastname: "A",
-    id: 3,
-  },
-  {
-    name: "Bold",
-    age: 21,
-    lastname: "E",
-  },
-  {
-    name: "Sambuu",
-    age: 22,
-    lastname: "D",
-    id: 4,
-  },
-];
-let secondArray = [
-  {
-    name: "Dorj",
-    age: 22,
-    lastname: "D",
-    id: 4,
-  },
-  {
-    name: "Tsogt",
-    age: 22,
-    lastname: "D",
-    id: 4,
-  },
-];
 
 const port = 8080;
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+let user = [
+  {
+    name: "Batuusch",
+    age: 25,
+  },
+];
 app.get("/", (request, response) => {
-  response.json(array);
+  response.json(user);
 });
 app.post("/", (request, response) => {
+  user.push(request.body);
   console.log(request.body);
+  response.send(user);
+  let data = fs.readFileSync("data.json");
+  console.log(data)
+  let obj = JSON.parse(data);
+  obj.user.push(request.body);
+  fs.writeFileSync("data.json",JSON.stringify(obj ));
 });
-// app.delete("/", (request, response) => {
-//   response.send();
-// });
+
+app.delete("/", (request, response) => {
+  response.send(user.pop());
+});
 app.listen(port, () => {
   console.log(`ene port http://localhost:${8080}/`);
 });
+
