@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 export default function Home() {
-  const [name, setName] = useState("hel");
-  const [age, setAge] = useState(15);
+  const [name, setName] = useState("Neree oruulana uu ?");
+  const [age, setAge] = useState("nasaa oruulana uu ?");
   const [data, setData] = useState([]);
+  const [dataFeel, setDataFeel] = useState(0);
   const fetcData = async () => {
     const response = await fetch("http://localhost:8080/", {
       method: "POST", // *GET, POST, PUT, DELETE, etc.
@@ -15,8 +16,38 @@ export default function Home() {
     }).then((response) => response.json());
     // const res = await response.json();
     // console.log(res);
-    setData(response);
+    setDataFeel(dataFeel + 1);
   };
+  const getData = async () => {
+    const res = await fetch("http://localhost:8080/");
+    const data1 = await res.json();
+    // let id = {id:Math.random()}
+    // const data2 = data1.push(id);
+    setData(data1);
+  };
+  const deleteFunc = async (index) => {
+    const sendData = await fetch(`http://localhost:8080/${index}`, {
+      method: "DELETE",
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+    setDataFeel(dataFeel + 1);
+  };
+  const editFunc = async (index) => {
+    const editData = await fetch(`http://localhost:8080/${index}`, {
+      method: "PATCH",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: JSON.stringify(editData),
+    });
+    setDataFeel(dataFeel + 1);
+  };
+
+  useEffect(() => {
+    getData();
+  }, [dataFeel]);
 
   const addData = () => {
     fetcData();
@@ -27,7 +58,6 @@ export default function Home() {
   // useEffect(() => {
   //   fetcData();
   // }, []);
-  console.log(data);
   return (
     <main className="flex  w-full h-full flex-col items-center mt-10 gap-20">
       <div
@@ -51,13 +81,25 @@ export default function Home() {
         </button>
       </div>
       <div>
-        {data.map((el) => {
+        {data.map((el, index) => {
           return (
             <div className="w-[200px] flex flex-col   ">
               {" "}
-              <div className="*:py-1  *:border-black *:border *:rounded-md *:text-center flex gap-5 w-full *:px-3 py-1">
+              <div
+                key={index}
+                className="*:py-1  *:border-black *:border *:rounded-md *:text-center flex gap-5 w-full *:px-3 py-1"
+              >
                 <div>{el.name}</div>
                 <div>{el.age}</div>
+                <button
+                  onClick={() => {
+                    deleteFunc(index);
+                  }}
+                  className="bg-blue-200 hover:bg-blue-300"
+                >
+                  Delete
+                </button>
+                <button  className="bg-blue-200 hover:bg-blue-300">Edit</button>
               </div>
             </div>
           );
